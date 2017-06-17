@@ -1,3 +1,36 @@
+.xo-container {
+  margin: 20px auto 0; }
 
+.xo-row {
+  width: 900px;
+  display: flex;
+  flex-direction: row;
+  margin: 0 auto;
+  border-bottom: 5px solid black; }
+
+.xo-row:last-child {
+  border-bottom: 0; }
+
+.xo-cell {
+  width: 300px;
+  height: 300px;
+  font-size: 150px;
+  line-height: 300px;
+  text-align: center;
+  box-sizing: border-box;
+  border-right: 5px solid black; }
+
+.xo-cell:last-child {
+  border-right: 0; }
+
+@media screen and (max-width: 768px) {
+  .xo-row {
+    width: 450px; }
+
+  .xo-cell {
+    width: 150px;
+    height: 150px;
+    font-size: 50px;
+    line-height: 150px; } }
 
 /*# sourceMappingURL=style.css.map */
