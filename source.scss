@@ -1,4 +1,4 @@
-$cell-size: 300px;
+$cell-size: 200px;
 
 .xo-container {
     margin: 20px auto 0; 
@@ -21,6 +21,7 @@ $cell-size: 300px;
     line-height: $cell-size;
     text-align: center;
     box-sizing: border-box;
+    cursor: pointer;
     border-right: 5px solid black;
 }
 
