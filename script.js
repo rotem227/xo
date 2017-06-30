@@ -43,45 +43,45 @@ var xo = {
             rowNumber = 0,
             cellNumber = 0,
             winRow = -1,
-            searchInRow = true,
-            continueChecking = true;
+            emptyRow = true,
+            allCellsAreEqual = true,
+            continueSearchInRow = true;
         
-        log("*********************************************");
-        log("Checking Horizonal:");
-        
-        while ( continueChecking ) {
-            for ( rowNumber = 0 ; rowNumber < this.grid ; rowNumber++ ) {
-                log("-------------------------------");
-                cell = this.board[rowNumber]["group"+rowNumber+""];
-                while ( searchInRow && cellNumber < this.grid ) {
-                    log("Checking in row number: " + rowNumber + " | searchInRow: " + searchInRow + " cellNumber: " + cellNumber);
-                    log("cell1 value: " + cell[cellNumber]);
-                    log("cell2 value: " + cell[cellNumber - 1]);
+        for ( rowNumber = 0 ; rowNumber < this.grid ; rowNumber++ ) {
+            log("*************** Checking row number: " + rowNumber);
+            cell = this.board[rowNumber]["group"+rowNumber+""];
+            log("continueSearchInRow: " + continueSearchInRow + " | cellNumber: " + cellNumber);
+            while ( continueSearchInRow && cellNumber < this.grid ) {
+                if ( cellNumber > 0 ) {
+                    log("---------------------------------------------");
+                    log("--- inside while loop... checking cell number: " + cellNumber);
+                    log("checking typeof cell: " + typeof(cell[cellNumber]));
+                    log("checking typeof cell1 - 1: " + typeof(cell[cellNumber - 1]));
                     if ( typeof(cell[cellNumber]) != "undefined" && typeof(cell[cellNumber - 1]) != "undefined" ) {
                         if ( cell[cellNumber] != cell[cellNumber - 1] ) {
-                            searchInRow = false;    
+                            continueSearchInRow = false;    
+                            emptyRow = false;
                             log("Different cells were found");
                         }
                     } else {
-                        searchInRow = false; 
+                        continueSearchInRow = false; 
                         log("Empty cell was found");
                     }
-                    cellNumber++;
                 }
-                if ( searchInRow ) {
-                    winRow = rowNumber;
-                    continueChecking = false;
-                    log("winRow was found: " + winRow);
-                } else {
-                    cellNumber = 0;
-                    searchInRow = true;
-                }
-                log("End of row number: " + rowNumber);
-                log("-------------------------------");
+                cellNumber++;
+                log("---------------------------------------------");
             }
+            log("End of cells while loop");
+            log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            if ( continueSearchInRow ) {
+                winRow = rowNumber;
+                log("winRow was found: " + winRow);
+            } else {
+                continueSearchInRow = true;
+            }
+            log("*****************************************************");
         }
-        
-        log("*********************************************");
+        log("*** End of rows loop");
         log("winRow: " + winRow);
         return winRow;
         
