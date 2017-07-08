@@ -154,6 +154,7 @@ var xo = {
 
         return -1;
     },
+/*
     checkDiagonal: function() {
         var that = this,
             i = 0,
@@ -162,7 +163,7 @@ var xo = {
             diagonalIndex = 0,
             winDiagonal = -1;
             
-        log("------------------------------------------------------------------------ checkDiagonal()");
+        console.log("------------------------------------------------------------------------ checkDiagonal()");
         
         function addCellValueToArray(row, column) {
             if ( that.board[row][column] != undefined ) {
@@ -170,13 +171,13 @@ var xo = {
             }
         }
         
-        function createBackSlashDiagonalArray() {
+        function createBackSlashDiagonalArray(index) {
             for ( diagonalIndex = 0 ; diagonalIndex < that.grid ; diagonalIndex++ ){
                 addCellValueToArray(diagonalIndex, diagonalIndex);
             }
         }
         
-        function createForwardSlashDiagonalArray() {
+        function createForwardSlashDiagonalArray(index) {
             var rowNumber = 0;
             for ( diagonalIndex = that.grid - 1 ; diagonalIndex >= 0 ; diagonalIndex-- ){
                 addCellValueToArray(rowNumber, diagonalIndex);
@@ -203,6 +204,68 @@ var xo = {
             
             diagonalArray = [];
             diagonalLoop++;
+        }
+        
+        return -1;
+    },
+*/
+    checkDiagonal: function() {
+        var that = this,
+            i = 0,
+            z = 0,
+            q = 0,
+            diagonalArray = [],
+            winDiagonal = -1;
+            
+        console.log("------------------------------------------------------------------------ checkDiagonal()");
+        
+        function addCellValueToArray(row, column) {
+            if ( that.board[row][column] != undefined ) {
+                diagonalArray.push(that.board[row][column]);
+            }
+        }
+        
+        function createBackSlashDiagonalArray(row, column) {
+            for ( q = row ; q < row + 2 ; q++ ){
+                addCellValueToArray(q, q);
+            }
+        }
+        
+        function createForwardSlashDiagonalArray(row, column) {
+            var rowNumber = 0;
+            
+            for ( q = that.grid - 1 ; q >= 0 ; q-- ){
+                addCellValueToArray(rowNumber, q);
+                rowNumber++;
+            }
+        }
+        
+        // Rows - starting point limit - loop
+        for ( i = 0 ; i < ((this.grid - 3) + 1) ; i++ ) {
+            // Cells loop
+            for ( z = 0 ; z < this.grid ; z++ ) {
+                // Right diagonal
+                if ( z + 2 < this.grid ) {
+                    createBackSlashDiagonalArray(i, z);
+                }
+                
+                // Left diagonal
+                if ( z - 2 >= 0 ) {
+                    createForwardSlashDiagonalArray(i, z);
+                }
+  
+                // Minimum of 3 values are needed for victory
+                if ( diagonalArray.length > 2 ) {
+                    if ( this.isSeriesOfThree(diagonalArray) ) {
+                        winDiagonal = i;
+                        this.win.index = winDiagonal;
+                        this.win.direction = "diagonal";
+                        return winDiagonal;
+                    }
+                }
+
+                diagonalArray = [];
+            }
         }
         
         return -1;
