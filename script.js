@@ -1,5 +1,5 @@
 var log = function(msg) {
-    console.log(msg);
+    //console.log(msg);
 };
 
 var xo = {
@@ -40,14 +40,14 @@ var xo = {
             this.board[i] = [];
         }
         
-        log(this.board);
+        //log(this.board);
     },
     declareWinner: function() {
         alert("***** WIN!!! -> " + this.win.symbol + " is the winner!!!");
         return false;
     },
     markWin: function(winArray, direction) {
-        console.log("winning array:");
+        console.log("****************** winning array:");
         console.log(this.win.array);
         console.log("win symbol: " + this.win.symbol);
         console.log("win index: " + this.win.index);
@@ -195,7 +195,6 @@ var xo = {
             if ( diagonalArray.length > 2 ) {
                 if ( this.isSeriesOfThree(diagonalArray) ) {
                     winDiagonal = diagonalLoop;
-                    this.win.symbol = columnArray[0];
                     this.win.index = winDiagonal;
                     this.win.direction = "diagonal";
                     return winDiagonal;
