@@ -13,8 +13,6 @@
   height: 0;
   margin-left: -5px;
   margin-top: -5px;
-  padding-bottom: 15%;
-  font-size: 5.5vw;
   line-height: 270%;
   text-align: center;
   box-sizing: border-box;
@@ -33,17 +31,25 @@
   width: 300px;
   margin: 40px 0; }
   .xo-range .range-container {
-    width: 89%;
+    width: 260px;
     margin: 0 auto; }
   .xo-range .range-labels {
     width: 100%;
+    margin-top: 8px;
     text-align: center; }
     .xo-range .range-labels label {
       display: inline-block;
-      width: 13%;
+      width: 32.5px;
       font-size: 16px;
       font-weight: bold;
-      text-align: center; }
+      text-align: center;
+      color: #bbbbbb; }
+    .xo-range .range-labels .range-selected-value {
+      color: black; }
+    .xo-range .range-labels label::before {
+      content: '|';
+      display: block;
+      font-weight: bold; }
 
 input[type=range] {
   -webkit-appearance: none;
@@ -85,7 +91,7 @@ input[type=range]::-webkit-slider-runnable-track {
   height: 10px;
   cursor: pointer;
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  background: #3071a9;
+  background: lightgrey;
   border-radius: 5px;
   border: 0.2px solid #010101; }
 

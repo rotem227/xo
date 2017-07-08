@@ -165,9 +165,6 @@ var xo = {
         return -1;
     },
     checkForWin: function() {
-        if ( this.checkHorizontal() > -1 || this.checkVertical() > -1 || this.checkDiagonal() > -1 ) {
-            //this.declareWinner();
-        }
         if ( this.checkHorizontal() > -1 ) {
             alert("Horizintal Win!: " + this.checkHorizontal());
         }
@@ -214,12 +211,35 @@ var xo = {
             }
         }
     },
+    setCellsStyle: function() {
+        var i = 0,
+            z = 0,
+            cell = document.getElementsByClassName("xo-cell"),
+            cellStyleProperties = ["width", "height", "lineHeight"],
+            cellSize = (window.innerWidth / 10) - (this.grid * 7);
+        
+        if ( cellSize < 40 ) {
+            cellSize = 40;
+        }
+        
+        for ( i = 0 ; i < cell.length ; i++ ) {
+            for ( z = 0 ; z < cellStyleProperties.length ; z++ ) {
+                cell[i].style[cellStyleProperties[z]] = cellSize + "px";
+                cell[i].style.fontSize = (cellSize / 2) + "px";
+            }
+        }
+
+    },
     generateGameBoard: function() {
         var row = 0,
             column = 0,
             xoContainer = document.getElementsByClassName("xo-container")[0],
             xoRow,
             xoCell;
+            
+        while (xoContainer.firstChild) {
+            xoContainer.removeChild(xoContainer.firstChild);
+        }
         
         for ( row = 0 ; row < this.grid ; row++ ) {
             xoRow = document.createElement("div");
@@ -236,14 +256,35 @@ var xo = {
     },
     init: function() {
         this.generateGameBoard();
+        this.setCellsStyle();
         this.createHorizontalArrays();
         this.createCellsClickEvents();
     }
 };
 
+var setGrid = function(rangeSelectedValue) {
+    var i = 0,
+        rangeLabels = document.querySelectorAll(".xo-range .range-labels label");
+    
+    for ( i = 0 ; i < rangeLabels.length ; i++ ) {
+        rangeLabels[i].className = "";
+    }   
+    
+    rangeLabels[rangeSelectedValue - 3].className = "range-selected-value";
+    
+    xo.grid = rangeSelectedValue;
+    xo.init();
+
+};
+
+window.onresize = function() {
+    xo.setCellsStyle();
+};
+
 document.addEventListener("DOMContentLoaded", function() {
 
-    xo.init();
+    document.getElementsByName("range")[0].value = 9;
+    setGrid(document.getElementsByName("range")[0].value);
 
 });
 
