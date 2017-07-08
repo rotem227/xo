@@ -220,25 +220,46 @@ var xo = {
         console.log("------------------------------------------------------------------------ checkDiagonal()");
         
         function addCellValueToArray(row, column) {
-            if ( that.board[row][column] != undefined ) {
-                diagonalArray.push(that.board[row][column]);
-            }
+            console.log("$$$ getting the values of row: " + row + " column: " + column);
+            diagonalArray.push(that.board[row][column]);
         }
         
         function createBackSlashDiagonalArray(row, column) {
-            for ( q = row ; q < row + 2 ; q++ ){
-                addCellValueToArray(q, q);
+            console.log("----- backSlash -> loop of: " + row + " until less than: " + (row + 3));
+            for ( q = row ; q < row + 3 ; q++ ) {
+                addCellValueToArray(q, column);
+                column++;
             }
+            console.log("----- end of backSlash loop");
         }
         
         function createForwardSlashDiagonalArray(row, column) {
-            var rowNumber = 0;
-            
-            for ( q = that.grid - 1 ; q >= 0 ; q-- ){
-                addCellValueToArray(rowNumber, q);
-                rowNumber++;
+            //console.log("forwardSlash: " + " row: " + row + " column: " + column);
+            for ( q = column ; q >= column - 2 ; q-- ){
+                addCellValueToArray(row, q);
+                row++;
             }
         }
+        
+        function checkForDiagonalWin() {
+            // Minimum of 3 values are needed for victory
+            if ( diagonalArray.length > 2 ) {
+                if ( that.isSeriesOfThree(diagonalArray) ) {
+                    winDiagonal = i;
+                    that.win.index = winDiagonal;
+                    that.win.direction = "diagonal";
+                    console.log("win!: " + winDiagonal);
+                    return winDiagonal;
+                }
+            }
+            
+            console.log("*** can't find a win");
+            //console.log("------------------");
+            
+            diagonalArray = [];
+            return -1;
+        }
+        
         
         // Rows - starting point limit - loop
         for ( i = 0 ; i < ((this.grid - 3) + 1) ; i++ ) {
@@ -246,27 +267,41 @@ var xo = {
             for ( z = 0 ; z < this.grid ; z++ ) {
                 // Right diagonal
                 if ( z + 2 < this.grid ) {
+                    console.log("i: " + i + " z: " + z);
+                    //console.log("Right check -> i: " + i + " z: " + z + " | right");
                     createBackSlashDiagonalArray(i, z);
                 }
                 
-                // Left diagonal
-                if ( z - 2 >= 0 ) {
-                    createForwardSlashDiagonalArray(i, z);
-                }
-  
-                // Minimum of 3 values are needed for victory
-                if ( diagonalArray.length > 2 ) {
-                    if ( this.isSeriesOfThree(diagonalArray) ) {
-                        winDiagonal = i;
-                        this.win.index = winDiagonal;
-                        this.win.direction = "diagonal";
-                        return winDiagonal;
-                    }
+                console.log(diagonalArray);
+                
+                if ( checkForDiagonalWin() > -1 ) {
+                    return winDiagonal;
                 }
 
+                //diagonalArray = [];
+                // Left diagonal
+                /*
+                if ( z - 2 >= 0 ) {
+                    console.log("Left Check -> i: " + i + " z: " + z + " | left");
+                    createForwardSlashDiagonalArray(i, z);
+                }
+                
+                console.log("--------- Left:");
+                console.log(diagonalArray);
+                console.log("---------------");
+                */
+                
+                //if ( checkForDiagonalWin() > -1 ) {
+                    //return winDiagonal;
+                //}
+                
                 diagonalArray = [];
             }
         }
+        
+        console.log("**********************************************************");
+        console.log("**********************************************************");
+        console.log("**********************************************************");
         
         return -1;
     },
