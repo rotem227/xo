@@ -220,22 +220,22 @@ var xo = {
         console.log("------------------------------------------------------------------------ checkDiagonal()");
         
         function addCellValueToArray(row, column) {
-            console.log("$$$ getting the values of row: " + row + " column: " + column);
+            //console.log("       $$$ getting the values of row: " + row + " column: " + column);
             diagonalArray.push(that.board[row][column]);
         }
         
         function createBackSlashDiagonalArray(row, column) {
-            console.log("----- backSlash -> loop of: " + row + " until less than: " + (row + 3));
+            //console.log("----- backSlash -> loop of: " + row + " until less than: " + (row + 3));
             for ( q = row ; q < row + 3 ; q++ ) {
                 addCellValueToArray(q, column);
                 column++;
             }
-            console.log("----- end of backSlash loop");
+            //console.log("----- end of backSlash loop");
         }
         
         function createForwardSlashDiagonalArray(row, column) {
-            //console.log("forwardSlash: " + " row: " + row + " column: " + column);
-            for ( q = column ; q >= column - 2 ; q-- ){
+            //console.log("   --- starting from q of: " + column + " until q>= " + (column - 2));
+            for ( q = column ; q >= column - 2 ; q-- ) {
                 addCellValueToArray(row, q);
                 row++;
             }
@@ -266,36 +266,33 @@ var xo = {
             // Cells loop
             for ( z = 0 ; z < this.grid ; z++ ) {
                 // Right diagonal
+                
                 if ( z + 2 < this.grid ) {
                     console.log("i: " + i + " z: " + z);
                     //console.log("Right check -> i: " + i + " z: " + z + " | right");
                     createBackSlashDiagonalArray(i, z);
                 }
                 
-                console.log(diagonalArray);
+                //console.log(diagonalArray);
                 
                 if ( checkForDiagonalWin() > -1 ) {
                     return winDiagonal;
                 }
+                
 
-                //diagonalArray = [];
                 // Left diagonal
-                /*
+                
+                //console.log("i: " + i + " z: " + z);
                 if ( z - 2 >= 0 ) {
-                    console.log("Left Check -> i: " + i + " z: " + z + " | left");
+                    //console.log("|-> Left");
                     createForwardSlashDiagonalArray(i, z);
                 }
                 
-                console.log("--------- Left:");
-                console.log(diagonalArray);
-                console.log("---------------");
-                */
-                
-                //if ( checkForDiagonalWin() > -1 ) {
-                    //return winDiagonal;
-                //}
-                
-                diagonalArray = [];
+                //console.log(diagonalArray);
+
+                if ( checkForDiagonalWin() > -1 ) {
+                    return winDiagonal;
+                }
             }
         }
         
