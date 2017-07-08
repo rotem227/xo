@@ -1,37 +1,92 @@
 .xo-container {
-  margin: 20px auto 0; }
+  margin: 20px auto 0;
+  text-align: center; }
 
 .xo-row {
-  width: 600px;
-  display: flex;
-  flex-direction: row;
   margin: 0 auto;
-  border-bottom: 5px solid black; }
-
-.xo-row:last-child {
-  border-bottom: 0; }
+  text-align: center; }
 
 .xo-cell {
-  width: 200px;
-  height: 200px;
-  font-size: 100px;
-  line-height: 200px;
+  display: inline-block;
+  vertical-align: top;
+  width: 15%;
+  height: 0;
+  margin-left: -5px;
+  margin-top: -5px;
+  padding-bottom: 15%;
+  font-size: 5.5vw;
+  line-height: 270%;
   text-align: center;
   box-sizing: border-box;
   cursor: pointer;
-  border-right: 5px solid black; }
+  border-right: 5px solid black;
+  border-bottom: 5px solid black; }
 
 .xo-cell:last-child {
   border-right: 0; }
 
-@media screen and (max-width: 768px) {
-  .xo-row {
-    width: 300px; }
+.xo-row:last-child .xo-cell {
+  border-bottom: 0; }
 
-  .xo-cell {
-    width: 100px;
-    height: 100px;
-    font-size: 33.33333px;
-    line-height: 100px; } }
+.xo-range {
+  display: block;
+  width: 300px;
+  margin: 40px 0; }
+  .xo-range .range-container {
+    width: 89%;
+    margin: 0 auto; }
+  .xo-range .range-labels {
+    width: 100%;
+    text-align: center; }
+    .xo-range .range-labels label {
+      display: inline-block;
+      width: 13%;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  /* Hides the slider so that custom slider can be made */
+  width: 98%;
+  /* Specific width is required for Firefox. */
+  background: transparent;
+  /* Otherwise white in Chrome */ }
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; }
+
+input[type=range]:focus {
+  outline: none;
+  /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */ }
+
+input[type=range]::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  /* Hides the slider so custom styles can be added */
+  background: transparent;
+  border-color: transparent;
+  color: transparent; }
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: 1px solid #000000;
+  height: 34px;
+  width: 34px;
+  margin-top: -14px;
+  border-radius: 50px;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d; }
+
+input[type=range]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 10px;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  background: #3071a9;
+  border-radius: 5px;
+  border: 0.2px solid #010101; }
 
 /*# sourceMappingURL=style.css.map */

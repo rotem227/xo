@@ -3,7 +3,7 @@ var log = function(msg) {
 };
 
 var xo = {
-    grid: 4,
+    grid: 5,
     board: [],
     rowClass: ".xo-row",
     cellClass: ".xo-cell",
@@ -214,7 +214,28 @@ var xo = {
             }
         }
     },
+    generateGameBoard: function() {
+        var row = 0,
+            column = 0,
+            xoContainer = document.getElementsByClassName("xo-container")[0],
+            xoRow,
+            xoCell;
+        
+        for ( row = 0 ; row < this.grid ; row++ ) {
+            xoRow = document.createElement("div");
+            xoRow.className = "xo-row";
+            xoContainer.appendChild(xoRow);
+            
+            xoRow = document.getElementsByClassName("xo-row")[row];
+            for ( column = 0 ; column < this.grid ; column++ ) {
+                xoCell = document.createElement("div");
+                xoCell.className = "xo-cell";
+                xoRow.appendChild(xoCell);
+            }            
+        }
+    },
     init: function() {
+        this.generateGameBoard();
         this.createHorizontalArrays();
         this.createCellsClickEvents();
     }
