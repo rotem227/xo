@@ -8,7 +8,12 @@ var xo = {
     rowClass: ".xo-row",
     cellClass: ".xo-cell",
     currentSumbol: "",
-    winner: "",
+    win: {
+        symbol: "",
+        array: [],
+        index: 0,
+        direction: ""
+    },
     generateSymbol: (function() {
         var symbols = ["X", "O"],
             randomBinary = Math.floor(Math.random() * 2),
@@ -38,23 +43,26 @@ var xo = {
         log(this.board);
     },
     declareWinner: function() {
-        alert("***** WIN!!! -> " + this.winner + " is the winner!!!");
+        alert("***** WIN!!! -> " + this.win.symbol + " is the winner!!!");
         return false;
+    },
+    markWin: function(winArray, direction) {
+        console.log("winning array:");
+        console.log(this.win.array);
+        console.log("win symbol: " + this.win.symbol);
+        console.log("win index: " + this.win.index);
+        console.log("win direction: " + this.win.direction);
     },
     isEqual: function(checkArray) {
         var i = 0;
         
         for ( i = 0 ; i < checkArray.length ; i++ ) {
             if ( i > 0 ) {
-                //log("checking if : " + checkArray[i] + " is equal to: " + checkArray[i-1]);
                 if ( checkArray[i] != checkArray[i-1] ) {
-                    //log("both values are different");
                     return false;
                     log("isEqual() -> all values are NOT equal");
                 } else {
-                    //log("checking if one of the value is undefined");
                     if ( checkArray[i] == undefined || checkArray[i-1] == undefined ) {
-                        //log("one of the values is undefined");
                         return false;
                         log("isEqual() -> all values are NOT equal");
                     }
@@ -65,6 +73,35 @@ var xo = {
         log("isEqual() -> all values are equal");
         return true;
     },
+    isSeriesOfThree: function(checkArray) {
+        var i = 0,
+            z = 0,
+            lastLoopValue = 0,
+            arrayOfThree = [],
+            seriesOfThree = false;
+
+        if ( checkArray.length > 3 ) {
+            lastLoopValue = checkArray.length - 2;
+        } else {
+            lastLoopValue = 1;
+        }
+        
+        for ( i = 0 ; i < lastLoopValue ; i++ ) {
+            for ( z = 0 ; z < 3 ; z++ ) {
+                arrayOfThree.push( checkArray[i + z] );
+            }
+            
+            if ( this.isEqual(arrayOfThree) ) {
+                this.win.array = checkArray;
+                this.win.symbol = arrayOfThree[0];
+                return true;
+            } 
+            
+            arrayOfThree = [];
+        }
+        
+        return false;
+    },
     checkHorizontal: function() {
         var rowArray = [],
             rowNumber = 0,
@@ -74,10 +111,12 @@ var xo = {
 
         for ( rowNumber = 0 ; rowNumber < this.grid ; rowNumber++ ) {
             rowArray = this.board[rowNumber];
-            if ( rowArray.length == this.grid ) {
-                if ( this.isEqual(rowArray) ) {
+            // Minimum of 3 values are needed for victory
+            if ( rowArray.length > 2 ) {
+                if ( this.isSeriesOfThree(rowArray) ) {
                     winRow = rowNumber;
-                    this.winner = rowArray[0];
+                    this.win.index = winRow;
+                    this.win.direction = "horizontal";
                     return winRow;
                 }
             }
@@ -100,10 +139,12 @@ var xo = {
                 }
             }
 
-            if ( columnArray.length == this.grid ) {
-                if ( this.isEqual(columnArray) ) {
+            // Minimum of 3 values are needed for victory
+            if ( columnArray.length > 2 ) {
+                if ( this.isSeriesOfThree(columnArray) ) {
                     winColumn = columnNumber;
-                    this.winner = columnArray[0];
+                    this.win.index = winColumn;
+                    this.win.direction = "vertical";
                     return winColumn;
                 }
             }
@@ -150,10 +191,13 @@ var xo = {
                 createForwardSlashDiagonalArray();
             }
   
-            if ( diagonalArray.length == this.grid ) {
-                if ( this.isEqual(diagonalArray) ) {
+            // Minimum of 3 values are needed for victory
+            if ( diagonalArray.length > 2 ) {
+                if ( this.isSeriesOfThree(diagonalArray) ) {
                     winDiagonal = diagonalLoop;
-                    this.winner = diagonalArray[0];
+                    this.win.symbol = columnArray[0];
+                    this.win.index = winDiagonal;
+                    this.win.direction = "diagonal";
                     return winDiagonal;
                 }
             }
@@ -165,14 +209,8 @@ var xo = {
         return -1;
     },
     checkForWin: function() {
-        if ( this.checkHorizontal() > -1 ) {
-            alert("Horizintal Win!: " + this.checkHorizontal());
-        }
-        if ( this.checkVertical() > -1 ) {
-            alert("Vertical Win!: " + this.checkVertical());
-        }
-        if ( this.checkDiagonal() > -1 ) {
-            alert("Diagonal Win!: " + this.checkDiagonal());
+        if ( this.checkHorizontal() > -1 || this.checkVertical() > -1 || this.checkDiagonal() > -1 ) {
+            this.markWin();
         }
     },
     addSymbolToHorizontalArray: function(symbol, cellNumber, rowNumber) {
@@ -283,7 +321,7 @@ window.onresize = function() {
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    document.getElementsByName("range")[0].value = 9;
+    document.getElementsByName("range")[0].value = 4;
     setGrid(document.getElementsByName("range")[0].value);
 
 });
