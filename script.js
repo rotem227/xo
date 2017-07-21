@@ -5,14 +5,15 @@ var log = function(msg) {
 var xo = {
     grid: 5,
     board: [],
-    rowClass: ".xo-row",
-    cellClass: ".xo-cell",
+    rowClass: "xo-row",
+    cellClass: "xo-cell",
     currentSumbol: "",
     win: {
         symbol: "",
         array: [],
         index: [],
-        direction: ""
+        direction: "",
+        color: "blue"
     },
     generateSymbol: (function() {
         var symbols = ["X", "O"],
@@ -38,10 +39,57 @@ var xo = {
         alert("***** WIN!!! -> " + this.win.symbol + " is the winner!!!");
         return false;
     },
-    markHorizontalSequence: function() {
-        for ( var i = 0 ; i < this.grid ; i++ ) {
-            console.log("1");
+    isValueInArray: function(value, array) {
+        var i = 0;
+
+        if ( array.length > 0 ) {
+            for ( i = 0 ; i < array.length ; i++ ) {
+                if ( value == array[i] ) {
+                    return true;
+                }
+            }
         }
+        
+        return false;
+    },
+    createSequenceMapArray: function(array) {
+        console.log("array: ");
+        console.log(array);
+        var i = 0,
+            value = 0,
+            sequenceMapArray = [];
+
+        for ( i = 0 ; i < (array.length - 2) ; i++ ) {
+            if ( array[i] == array[i+1] && array[i] == array[i+2] ) {
+                value = i;
+                while ( value < i + 3 ) {
+                    if ( !this.isValueInArray(value, sequenceMapArray) ) {
+                       sequenceMapArray.push(value); 
+                    }
+                    value++;
+                }
+            }
+        }
+        
+        return sequenceMapArray;
+    },
+    markHorizontalWin: function() {
+        var i = 0,
+            winRowIndex = this.win.index[0],
+            winRowArray = this.board[winRowIndex],
+            sequenceMap = this.createSequenceMapArray(winRowArray),
+            xoRow = document.getElementsByClassName(this.rowClass)[winRowIndex],
+            xoCell = xoRow.getElementsByClassName(this.cellClass);
+        
+        for ( i = 0 ; i < sequenceMap.length ; i++ ) {
+            xoCell[sequenceMap[i]].style.color = this.win.color;
+        }
+    },
+    markVerticalWin: function() {
+        alert("vertical win!");
+    },
+    markDiagonalWin: function() {
+        alert("diagonal win!");
     },
     isEqual: function(checkArray) {
         var i = 0;
@@ -120,8 +168,6 @@ var xo = {
             winColumn = -1,
             boardRow = 0;
         
-        log("------------------------------------------------------------------------ checkVertical()");
-        
         for ( columnNumber = 0 ; columnNumber < this.grid ; columnNumber++ ) {
             for ( boardRow = 0 ; boardRow < this.grid ; boardRow++ ) {
                 if ( this.board[boardRow][columnNumber] != undefined ) {
@@ -152,8 +198,6 @@ var xo = {
             diagonalArray = [],
             currentDiagonal = "",
             winDiagonal = -1;
-            
-        log("------------------------------------------------------------------------ checkDiagonal()");
         
         function addCellValueToDiagonalArray(row, column) {
             diagonalArray.push(that.board[row][column]);
@@ -226,10 +270,12 @@ var xo = {
         return -1;
     },
     checkForWin: function() {
-        if ( this.checkHorizontal() > -1 || this.checkVertical() > -1 || this.checkDiagonal() > -1 ) {
-            console.log("checkForWin()");
-            console.log(this.win.direction);
-            console.log(this.markWinningSequence[this.win.direction]());
+        if ( this.checkHorizontal() > -1 ) {
+            this.markHorizontalWin();
+        } else if ( this.checkVertical() > -1 ) {
+            this.markVerticalWin();
+        } else if ( this.checkDiagonal() > -1 ) {
+            this.markDiagonalWin();
         }
     },
     addSymbolToHorizontalArray: function(symbol, cellNumber, rowNumber) {
@@ -248,7 +294,7 @@ var xo = {
         var currentRow = 0,
             currentCell = 0,
             that = this,
-            row = document.querySelectorAll(this.rowClass),
+            row = document.getElementsByClassName(this.rowClass),
             cell;
         
         // Adding click event to a cell
@@ -260,7 +306,7 @@ var xo = {
         
         // Iteraing the cells and calling the 'add click event' function
         for ( currentRow = 0 ; currentRow < this.grid ; currentRow++ ) {
-            cell = row[currentRow].querySelectorAll(this.cellClass);
+            cell = row[currentRow].getElementsByClassName(this.cellClass);
             for ( currentCell = 0 ; currentCell < this.grid ; currentCell++ ) {
                 addClickEventToCell(cell[currentCell], currentCell, currentRow); 
             }
