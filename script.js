@@ -11,7 +11,7 @@ var xo = {
     win: {
         symbol: "",
         array: [],
-        index: 0,
+        index: [],
         direction: ""
     },
     generateSymbol: (function() {
@@ -19,10 +19,12 @@ var xo = {
             randomBinary = Math.floor(Math.random() * 2),
             chosenSymbol = symbols[randomBinary];
         
+        // Swtiching between the symbols to get a different value in each time
         function getSymbol() {
             return ( chosenSymbol == symbols[0] ) ? symbols[1] : symbols[0];
         }
         
+        // Setting the first player symbol
         this.currentSymbol = getSymbol();
         log("FIRST SYMBOL: " + this.currentSymbol);       
        
@@ -32,26 +34,14 @@ var xo = {
             return chosenSymbol;
         };
     }()),
-    createHorizontalArrays: function() {
-        var i = 0;
-        
-        for ( i = 0 ; i < this.grid ; i++ ) {
-            this.board.push({});
-            this.board[i] = [];
-        }
-        
-        //log(this.board);
-    },
     declareWinner: function() {
         alert("***** WIN!!! -> " + this.win.symbol + " is the winner!!!");
         return false;
     },
-    markWin: function(winArray, direction) {
-        console.log("****************** winning array:");
-        console.log(this.win.array);
-        console.log("win symbol: " + this.win.symbol);
-        console.log("win index: " + this.win.index);
-        console.log("win direction: " + this.win.direction);
+    markHorizontalSequence: function() {
+        for ( var i = 0 ; i < this.grid ; i++ ) {
+            console.log("1");
+        }
     },
     isEqual: function(checkArray) {
         var i = 0;
@@ -73,7 +63,7 @@ var xo = {
         log("isEqual() -> all values are equal");
         return true;
     },
-    isSeriesOfThree: function(checkArray) {
+    isSequnceOfThree: function(checkArray) {
         var i = 0,
             z = 0,
             lastLoopValue = 0,
@@ -113,9 +103,9 @@ var xo = {
             rowArray = this.board[rowNumber];
             // Minimum of 3 values are needed for victory
             if ( rowArray.length > 2 ) {
-                if ( this.isSeriesOfThree(rowArray) ) {
+                if ( this.isSequnceOfThree(rowArray) ) {
                     winRow = rowNumber;
-                    this.win.index = winRow;
+                    this.win.index.push(winRow);
                     this.win.direction = "horizontal";
                     return winRow;
                 }
@@ -141,9 +131,9 @@ var xo = {
 
             // Minimum of 3 values are needed for victory
             if ( columnArray.length > 2 ) {
-                if ( this.isSeriesOfThree(columnArray) ) {
+                if ( this.isSequnceOfThree(columnArray) ) {
                     winColumn = columnNumber;
-                    this.win.index = winColumn;
+                    this.win.index.push(winColumn);
                     this.win.direction = "vertical";
                     return winColumn;
                 }
@@ -154,166 +144,97 @@ var xo = {
 
         return -1;
     },
-/*
-    checkDiagonal: function() {
-        var that = this,
-            i = 0,
-            diagonalLoop = 0,
-            diagonalArray = [],
-            diagonalIndex = 0,
-            winDiagonal = -1;
-            
-        console.log("------------------------------------------------------------------------ checkDiagonal()");
-        
-        function addCellValueToArray(row, column) {
-            if ( that.board[row][column] != undefined ) {
-                diagonalArray.push(that.board[row][column]);
-            }
-        }
-        
-        function createBackSlashDiagonalArray(index) {
-            for ( diagonalIndex = 0 ; diagonalIndex < that.grid ; diagonalIndex++ ){
-                addCellValueToArray(diagonalIndex, diagonalIndex);
-            }
-        }
-        
-        function createForwardSlashDiagonalArray(index) {
-            var rowNumber = 0;
-            for ( diagonalIndex = that.grid - 1 ; diagonalIndex >= 0 ; diagonalIndex-- ){
-                addCellValueToArray(rowNumber, diagonalIndex);
-                rowNumber++;
-            }
-        }
-        
-        while ( diagonalLoop < 2 ) {
-            if ( diagonalLoop == 0 ) {
-                createBackSlashDiagonalArray();
-            } else if ( diagonalLoop == 1 ) {
-                createForwardSlashDiagonalArray();
-            }
-  
-            // Minimum of 3 values are needed for victory
-            if ( diagonalArray.length > 2 ) {
-                if ( this.isSeriesOfThree(diagonalArray) ) {
-                    winDiagonal = diagonalLoop;
-                    this.win.index = winDiagonal;
-                    this.win.direction = "diagonal";
-                    return winDiagonal;
-                }
-            }
-            
-            diagonalArray = [];
-            diagonalLoop++;
-        }
-        
-        return -1;
-    },
-*/
     checkDiagonal: function() {
         var that = this,
             i = 0,
             z = 0,
             q = 0,
             diagonalArray = [],
+            currentDiagonal = "",
             winDiagonal = -1;
             
-        console.log("------------------------------------------------------------------------ checkDiagonal()");
+        log("------------------------------------------------------------------------ checkDiagonal()");
         
-        function addCellValueToArray(row, column) {
-            //console.log("       $$$ getting the values of row: " + row + " column: " + column);
+        function addCellValueToDiagonalArray(row, column) {
             diagonalArray.push(that.board[row][column]);
         }
         
+        // Checking 3 rows at a time
         function createBackSlashDiagonalArray(row, column) {
-            //console.log("----- backSlash -> loop of: " + row + " until less than: " + (row + 3));
+            currentDiagonal = "backslash";
             for ( q = row ; q < row + 3 ; q++ ) {
-                addCellValueToArray(q, column);
+                addCellValueToDiagonalArray(q, column);
                 column++;
             }
-            //console.log("----- end of backSlash loop");
         }
         
+        // checking 3 columns at a time
         function createForwardSlashDiagonalArray(row, column) {
-            //console.log("   --- starting from q of: " + column + " until q>= " + (column - 2));
+            currentDiagonal = "forwardslash";
             for ( q = column ; q >= column - 2 ; q-- ) {
-                addCellValueToArray(row, q);
+                addCellValueToDiagonalArray(row, q);
                 row++;
             }
         }
         
-        function checkForDiagonalWin() {
+        function checkForDiagonalWin(row, column) {
             // Minimum of 3 values are needed for victory
             if ( diagonalArray.length > 2 ) {
-                if ( that.isSeriesOfThree(diagonalArray) ) {
+                if ( that.isSequnceOfThree(diagonalArray) ) {
                     winDiagonal = i;
-                    that.win.index = winDiagonal;
-                    that.win.direction = "diagonal";
-                    console.log("win!: " + winDiagonal);
+                    that.win.index = [row, column];
+                    that.win.direction = currentDiagonal;
+                    log("win!: " + winDiagonal);
                     return winDiagonal;
                 }
             }
             
-            console.log("*** can't find a win");
-            //console.log("------------------");
+            //console.log("*** can't find a win");
             
             diagonalArray = [];
             return -1;
         }
         
-        
-        // Rows - starting point limit - loop
-        for ( i = 0 ; i < ((this.grid - 3) + 1) ; i++ ) {
+        // Rows loop - last row number of searching for diagonal sequnce is (this.grid - 2)
+        for ( i = 0 ; i < (this.grid - 2) ; i++ ) {
             // Cells loop
             for ( z = 0 ; z < this.grid ; z++ ) {
-                // Right diagonal
-                
+                // BackSlash diagonal
                 if ( z + 2 < this.grid ) {
-                    console.log("i: " + i + " z: " + z);
-                    //console.log("Right check -> i: " + i + " z: " + z + " | right");
                     createBackSlashDiagonalArray(i, z);
                 }
                 
-                //console.log(diagonalArray);
-                
-                if ( checkForDiagonalWin() > -1 ) {
+                if ( checkForDiagonalWin(i, z) > -1 ) {
                     return winDiagonal;
                 }
                 
-
-                // Left diagonal
-                
-                //console.log("i: " + i + " z: " + z);
+                // ForwardSlash diagonal
                 if ( z - 2 >= 0 ) {
-                    //console.log("|-> Left");
                     createForwardSlashDiagonalArray(i, z);
                 }
-                
-                //console.log(diagonalArray);
 
-                if ( checkForDiagonalWin() > -1 ) {
+                if ( checkForDiagonalWin(i, z) > -1 ) {
                     return winDiagonal;
                 }
             }
         }
         
-        console.log("**********************************************************");
-        console.log("**********************************************************");
-        console.log("**********************************************************");
+        log("**********************************************************");
+        log("**********************************************************");
+        log("**********************************************************");
         
         return -1;
     },
     checkForWin: function() {
         if ( this.checkHorizontal() > -1 || this.checkVertical() > -1 || this.checkDiagonal() > -1 ) {
-            this.markWin();
+            console.log("checkForWin()");
+            console.log(this.win.direction);
+            console.log(this.markWinningSequence[this.win.direction]());
         }
     },
     addSymbolToHorizontalArray: function(symbol, cellNumber, rowNumber) {
+        // Adding current symbol to horizontal arrays and check for a winning sequnce
         this.board[rowNumber][cellNumber] = symbol;
-        log("------------------------ START BOARD ------------------------");
-        log(this.board[0]);
-        log(this.board[1]);
-        log(this.board[2]);
-        log("------------------------- END BOARD -------------------------");
         this.checkForWin();
     },
     setSymbolInCell: function(cell, cellNumber, rowNumber) {
@@ -329,13 +250,15 @@ var xo = {
             that = this,
             row = document.querySelectorAll(this.rowClass),
             cell;
-            
+        
+        // Adding click event to a cell
         function addClickEventToCell(cellElement, cellNumber, rowNumber) {
             cellElement.addEventListener("click", function() {
                 that.setSymbolInCell(this, cellNumber, rowNumber);
             });
         }
         
+        // Iteraing the cells and calling the 'add click event' function
         for ( currentRow = 0 ; currentRow < this.grid ; currentRow++ ) {
             cell = row[currentRow].querySelectorAll(this.cellClass);
             for ( currentCell = 0 ; currentCell < this.grid ; currentCell++ ) {
@@ -343,15 +266,35 @@ var xo = {
             }
         }
     },
+    createHorizontalArrays: function() {
+        /*
+            Clicking on a cell will save its value in a horizontal order -
+            according the current row of the cell.
+            All the cells in the first row will be assigned to the first array,
+            All the cells in the second row will be assigned to the second array, and so on..
+            
+            This way, it will be easy to search for a winning sequence:
+            - Horizontal: In the current order of the arrays
+            - Vertical: In the first value of each array, second values of each array and so on..
+            - Diagonal: Iterating the arrays values in diagonal pattern
+        */
+        var i = 0;
+        
+        for ( i = 0 ; i < this.grid ; i++ ) {
+            this.board.push({});
+            this.board[i] = [];
+        }
+    },
     setCellsStyle: function() {
         var i = 0,
             z = 0,
             cell = document.getElementsByClassName("xo-cell"),
             cellStyleProperties = ["width", "height", "lineHeight"],
-            cellSize = (window.innerWidth / 10) - (this.grid * 7);
+            cellSize = (window.innerWidth / 10) - (this.grid * 7)
+            minimumCellSize = 40;
         
-        if ( cellSize < 40 ) {
-            cellSize = 40;
+        if ( cellSize < minimumCellSize ) {
+            cellSize = minimumCellSize;
         }
         
         for ( i = 0 ; i < cell.length ; i++ ) {
@@ -368,11 +311,13 @@ var xo = {
             xoContainer = document.getElementsByClassName("xo-container")[0],
             xoRow,
             xoCell;
-            
+        
+        // Delete current board
         while (xoContainer.firstChild) {
             xoContainer.removeChild(xoContainer.firstChild);
         }
         
+        // Generate new baord
         for ( row = 0 ; row < this.grid ; row++ ) {
             xoRow = document.createElement("div");
             xoRow.className = "xo-row";
