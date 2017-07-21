@@ -53,8 +53,6 @@ var xo = {
         return false;
     },
     createSequenceMapArray: function(array) {
-        console.log("array: ");
-        console.log(array);
         var i = 0,
             value = 0,
             sequenceMapArray = [];
@@ -86,10 +84,28 @@ var xo = {
         }
     },
     markVerticalWin: function() {
-        alert("vertical win!");
+        var i = 0,
+            winColumnIndex = this.win.index[0],
+            winColumnArray = [],
+            sequenceMap = [];
+        
+        // Build vertical array from board
+        for ( i = 0 ; i < this.grid ; i++ ) {
+            winColumnArray.push(this.board[i][winColumnIndex]);
+        }
+        
+        sequenceMap = this.createSequenceMapArray(winColumnArray);
+ 
+        console.log(sequenceMap);
+        console.log(winColumnIndex);
     },
     markDiagonalWin: function() {
-        alert("diagonal win!");
+        var i = 0,
+            winDiagonalIndex = this.win.index,
+            winDiagonalArray = [],
+            sequenceMap = [];
+            
+        console.log(winDiagonalIndex);
     },
     isEqual: function(checkArray) {
         var i = 0;
@@ -233,8 +249,6 @@ var xo = {
                 }
             }
             
-            //console.log("*** can't find a win");
-            
             diagonalArray = [];
             return -1;
         }
@@ -262,10 +276,6 @@ var xo = {
                 }
             }
         }
-        
-        log("**********************************************************");
-        log("**********************************************************");
-        log("**********************************************************");
         
         return -1;
     },
@@ -396,6 +406,7 @@ var setGrid = function(rangeSelectedValue) {
     rangeLabels[rangeSelectedValue - 3].className = "range-selected-value";
     
     xo.grid = rangeSelectedValue;
+    //xo.grid = 35;
     xo.init();
 
 };
