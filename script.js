@@ -27,7 +27,7 @@ var xo = {
         
         // Setting the first player symbol
         this.currentSymbol = getSymbol();
-        log("FIRST SYMBOL: " + this.currentSymbol);       
+        alert("FIRST PLAYER: " + this.currentSymbol);       
        
         return function() {
             chosenSymbol = getSymbol();
@@ -467,7 +467,6 @@ var setGrid = function(rangeSelectedValue) {
     rangeLabels[rangeSelectedValue - 3].className = "range-selected-value";
     
     xo.grid = rangeSelectedValue;
-    xo.grid = 35;
     xo.init();
 
 };
