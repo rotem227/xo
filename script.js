@@ -101,9 +101,9 @@ var xo = {
         
         sequenceMap = this.createSequenceMapArray(winColumnArray);
  
-        console.log("vertical win:");
-        console.log(sequenceMap);
-        console.log(winColumnIndex);
+        console.log("vertical win!");
+        //console.log(sequenceMap);
+        //console.log(winColumnIndex);
         
         for ( i = 0 ; i < sequenceMap.length ; i++ ) {
             xoCell = xoRow[sequenceMap[i]].getElementsByClassName(this.cellClass);
@@ -237,9 +237,7 @@ var xo = {
         
         for ( columnNumber = 0 ; columnNumber < this.grid ; columnNumber++ ) {
             for ( boardRow = 0 ; boardRow < this.grid ; boardRow++ ) {
-                if ( this.board[boardRow][columnNumber] != undefined ) {
-                    columnArray.push( this.board[boardRow][columnNumber] );
-                }
+                columnArray.push(this.board[boardRow][columnNumber]);
             }
 
             // Minimum of 3 values are needed for victory
@@ -257,7 +255,7 @@ var xo = {
 
         return -1;
     },
-    checkDiagonal: function() {
+    checkDiagonal: function(direction) {
         var that = this,
             i = 0,
             z = 0,
@@ -304,26 +302,30 @@ var xo = {
             return -1;
         }
         
-        // Rows loop - last row number of searching for diagonal sequnce is (this.grid - 2)
+        // Rows loop - max row number of searching for diagonal sequnce is (this.grid - 2)
         for ( i = 0 ; i < (this.grid - 2) ; i++ ) {
             // Cells loop
             for ( z = 0 ; z < this.grid ; z++ ) {
                 // BackSlash diagonal
-                if ( z + 2 < this.grid ) {
-                    createBackSlashDiagonalArray(i, z);
-                }
-                
-                if ( checkForDiagonalWin(i, z) > -1 ) {
-                    return winDiagonal;
+                if ( direction == "backslash" ) {
+                    if ( z + 2 < this.grid ) {
+                        createBackSlashDiagonalArray(i, z);
+                    }
+
+                    if ( checkForDiagonalWin(i, z) > -1 ) {
+                        return winDiagonal;
+                    }
                 }
                 
                 // ForwardSlash diagonal
-                if ( z - 2 >= 0 ) {
-                    createForwardSlashDiagonalArray(i, z);
-                }
+                if ( direction == "forwardslash" ) {
+                    if ( z - 2 >= 0 ) {
+                        createForwardSlashDiagonalArray(i, z);
+                    }
 
-                if ( checkForDiagonalWin(i, z) > -1 ) {
-                    return winDiagonal;
+                    if ( checkForDiagonalWin(i, z) > -1 ) {
+                        return winDiagonal;
+                    }
                 }
             }
         }
@@ -333,10 +335,18 @@ var xo = {
     checkForWin: function() {
         if ( this.checkHorizontal() > -1 ) {
             this.markHorizontalWin();
-        } else if ( this.checkVertical() > -1 ) {
+        } 
+        if ( this.checkVertical() > -1 ) {
             this.markVerticalWin();
-        } else if ( this.checkDiagonal() > -1 ) {
+        } 
+        if ( this.checkDiagonal("backslash") > -1 ) {
             this.markDiagonalWin();
+        }
+        if ( this.checkDiagonal("forwardslash") > -1 ) {
+            this.markDiagonalWin();
+        }
+        if ( this.checkHorizontal() > -1 || this.checkVertical() > -1 || this.checkDiagonal("backslash") > -1 || this.checkDiagonal("forwardslash") > -1 ) {
+            this.declareWinner();
         }
     },
     addSymbolToHorizontalArray: function(symbol, cellNumber, rowNumber) {
@@ -457,7 +467,7 @@ var setGrid = function(rangeSelectedValue) {
     rangeLabels[rangeSelectedValue - 3].className = "range-selected-value";
     
     xo.grid = rangeSelectedValue;
-    //xo.grid = 35;
+    xo.grid = 35;
     xo.init();
 
 };
