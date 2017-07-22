@@ -71,6 +71,9 @@ var xo = {
         
         return sequenceMapArray;
     },
+    markCell: function(element) {
+        element.style.color = this.win.color;
+    },
     markHorizontalWin: function() {
         var i = 0,
             winRowIndex = this.win.index[0],
@@ -80,14 +83,16 @@ var xo = {
             xoCell = xoRow.getElementsByClassName(this.cellClass);
         
         for ( i = 0 ; i < sequenceMap.length ; i++ ) {
-            xoCell[sequenceMap[i]].style.color = this.win.color;
+            this.markCell(xoCell[sequenceMap[i]]);
         }
     },
     markVerticalWin: function() {
         var i = 0,
             winColumnIndex = this.win.index[0],
             winColumnArray = [],
-            sequenceMap = [];
+            sequenceMap = [],
+            xoRow = document.getElementsByClassName(this.rowClass),
+            xoCell;
         
         // Build vertical array from board
         for ( i = 0 ; i < this.grid ; i++ ) {
@@ -99,6 +104,11 @@ var xo = {
         console.log("vertical win:");
         console.log(sequenceMap);
         console.log(winColumnIndex);
+        
+        for ( i = 0 ; i < sequenceMap.length ; i++ ) {
+            xoCell = xoRow[sequenceMap[i]].getElementsByClassName(this.cellClass);
+            this.markCell(xoCell[winColumnIndex]);
+        }
     },
     markDiagonalWin: function() {
         var that = this,
@@ -107,10 +117,6 @@ var xo = {
             winDiagonalArray = [],
             winDiagonalDirection = this.win.direction,
             sequenceMap = [];
-        
-        console.log("diagonal win:");
-        console.log(winDiagonalIndex);
-        console.log(winDiagonalDirection);
         
         // Building a backslash array from starting point of row and column
         function buildBackSlashArray(row, column) {
@@ -130,36 +136,29 @@ var xo = {
             }
         }
         
-        // Mark backslash array from starting point of row and column repeating until length value
-        function markBackSlashDiagonal(row, column, length) {
-        
-        }
-        
-        // Mark forwardslash array from starting point of row and column repeating until length value
-        function markForwardSlashDiagonal(row, column, length) {
-        
+        // Mark diagonal according direction from starting point of row and column until length value 
+        function markDiagonal(row, column, length, direction) {
+            var xoRow = document.getElementsByClassName(that.rowClass),
+                xoCell,
+                maxRow = row + length;
+            
+            while ( row < maxRow  ) {
+                xoCell = xoRow[row].getElementsByClassName(that.cellClass);
+                that.markCell(xoCell[column]);
+                row++;
+                ( direction == "backslash" ) ? column++ : column--;
+            }
         }
         
         if ( winDiagonalDirection == "backslash" ) {
             buildBackSlashArray(winDiagonalIndex[0], winDiagonalIndex[1]);
-        } else if ( winDiagonalDirection == "forwardslash" ) {
+        } else {
             buildForwardSlashArray(winDiagonalIndex[0], winDiagonalIndex[1]);
         }
         
-        console.log("************************************************ diagonal win:");
-        console.log(winDiagonalArray);
-        console.log("*****************************************************************");
-        
         sequenceMap = this.createSequenceMapArray(winDiagonalArray);
         
-        console.log(sequenceMap);
-        console.log(winDiagonalIndex);
-        
-        if ( winDiagonalDirection == "backslash" ) {
-            markBackSlashDiagonal(winDiagonalIndex[0], winDiagonalIndex[1], sequenceMap.length);
-        } else if ( winDiagonalDirection == "forwardslash" ) {
-             markForwardSlashDiagonal(winDiagonalIndex[0], winDiagonalIndex[1], sequenceMap.length);
-        }
+        markDiagonal(winDiagonalIndex[0], winDiagonalIndex[1], sequenceMap.length, winDiagonalDirection);
     },
     isEqual: function(checkArray) {
         var i = 0;
