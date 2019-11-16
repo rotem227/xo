@@ -1,5 +1,5 @@
 var log = function(msg) {
-    //console.log(msg);
+    console.log(msg);
 };
 
 var xo = {
@@ -167,11 +167,9 @@ var xo = {
             if ( i > 0 ) {
                 if ( checkArray[i] != checkArray[i-1] ) {
                     return false;
-                    log("isEqual() -> all values are NOT equal");
                 } else {
                     if ( checkArray[i] == undefined || checkArray[i-1] == undefined ) {
                         return false;
-                        log("isEqual() -> all values are NOT equal");
                     }
                 }
             }
